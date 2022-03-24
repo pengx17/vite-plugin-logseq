@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/pengx17/vite-plugin-logseq/compare/v1.0.0...v1.0.1) (2022-03-24)
+
+
+### Bug Fixes
+
+* build issue ([a4500e7](https://github.com/pengx17/vite-plugin-logseq/commit/a4500e7d517dcf620cf4c4dad707fe457d0f8a9f))
+
 # 1.0.0 (2022-03-24)
 
 
