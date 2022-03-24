@@ -11,8 +11,12 @@
     "prepare": "pnpm build"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^9.0.1",
     "@types/node": "^14.14.20",
     "prettier": "^2.0.5",
+    "semantic-release": "^19.0.2",
     "typescript": "^4.0.0",
     "vite": "latest"
   },
@@ -27,7 +31,6 @@
   },
   "homepage": "https://github.com/pengx17/vite-plugin-logseq#readme",
   "dependencies": {
-    "magic-string": "^0.26.1",
-    "undici": "^4.15.1"
+    "magic-string": "^0.26.1"
   }
 }
