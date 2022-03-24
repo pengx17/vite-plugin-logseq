@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/pengx17/vite-plugin-logseq/compare/v1.0.1...v1.1.0) (2022-03-24)
+
+
+### Features
+
+* add a hack to trigger re-render current page ([4f868f2](https://github.com/pengx17/vite-plugin-logseq/commit/4f868f23d55610194d840789443e55ec0a5e87b2))
+
 ## [1.0.1](https://github.com/pengx17/vite-plugin-logseq/compare/v1.0.0...v1.0.1) (2022-03-24)
 
 
