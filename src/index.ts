@@ -91,7 +91,7 @@ const logseqDevPlugin: () => Plugin = () => {
 
     transform(code, id) {
       if (
-        server!.moduleGraph.getModuleById(id)?.importers.size === 0 &&
+        server?.moduleGraph.getModuleById(id)?.importers.size === 0 &&
         !/node_modules/.test(id) &&
         id.startsWith(process.cwd())
       ) {
@@ -117,7 +117,7 @@ if (import.meta.hot) {
 
     // Overwrite dev HTML
     async buildStart() {
-      if (configEnv.command === "serve") {
+      if (configEnv.command === "serve" && server) {
         if (!server.httpServer) {
           throw new Error(
             `${pluginName} Only works for non-middleware mode for now`
