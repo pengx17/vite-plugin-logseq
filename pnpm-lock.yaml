@@ -5,6 +5,7 @@ specifiers:
   '@semantic-release/git': ^10.0.1
   '@semantic-release/npm': ^9.0.1
   '@types/node': ^14.14.20
+  conventional-changelog-conventionalcommits: ^4.6.3
   magic-string: ^0.26.1
   prettier: ^2.0.5
   semantic-release: ^19.0.2
@@ -19,6 +20,7 @@ devDependencies:
   '@semantic-release/git': 10.0.1_semantic-release@19.0.2
   '@semantic-release/npm': 9.0.1_semantic-release@19.0.2
   '@types/node': 14.18.12
+  conventional-changelog-conventionalcommits: 4.6.3
   prettier: 2.6.0
   semantic-release: 19.0.2
   typescript: 4.6.2
@@ -541,6 +543,15 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       compare-func: 2.0.0
+      q: 1.5.1
+    dev: true
+
+  /conventional-changelog-conventionalcommits/4.6.3:
+    resolution: {integrity: sha512-LTTQV4fwOM4oLPad317V/QNQ1FY4Hju5qeBIM1uTHbrnCE+Eg4CdRZ3gO2pUeR+tzWdp80M2j3qFFEDWVqOV4g==}
+    engines: {node: '>=10'}
+    dependencies:
+      compare-func: 2.0.0
+      lodash: 4.17.21
       q: 1.5.1
     dev: true
 
