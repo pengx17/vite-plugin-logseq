@@ -20,6 +20,18 @@ function getLogseqPluginId() {
   }
 }
 
+const reloadScript = `
+(() => {
+  try {
+    let name = logseq.api.get_current_page().originalName;
+    console.log(name)
+    logseq.api.replace_state("home");
+    logseq.api.replace_state("page", { name });
+  } catch (err) {
+    console.warn('failed to re-render current page', err);
+  }
+})();`;
+
 // TODO: support https?
 const request = async (url: string, options: RequestOptions) => {
   let resolve: (body: any) => void;
@@ -107,6 +119,14 @@ if (import.meta.hot) {
   });
 }\n\n`
         );
+
+        s.append(`
+if (import.meta.hot) {
+  setTimeout(() => {
+    top.eval(\`${reloadScript}\`);
+  });
+}\n`);
+
         // amend entries
         return {
           code: s.toString(),
