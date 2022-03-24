@@ -86,6 +86,8 @@ const logseqDevPlugin: () => Plugin = () => {
           hmr: {
             host: config.server?.host ?? "localhost",
           },
+          // There is no point to open the index.html
+          open: false
         });
       }
 
