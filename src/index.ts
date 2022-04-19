@@ -83,8 +83,10 @@ const logseqDevPlugin: () => Plugin = () => {
       if (resolvedEnv.command === "serve") {
         config.server = Object.assign({}, config.server, {
           cors: true,
+          // I think we do not need to concern about this ...
+          host: "localhost",
           hmr: {
-            host: config.server?.host ?? "localhost",
+            host: "localhost",
           },
           // There is no point to open the index.html
           open: false
@@ -149,7 +151,7 @@ if (import.meta.hot) {
         server.httpServer.once("listening", () => {
           let address = server.httpServer!.address()!;
           if (typeof address === "object" && address) {
-            address = "http://" + address.address + ":" + address.port;
+            address = "http://localhost" + ":" + address.port;
           }
           tapHtml(address).then(async (html) => {
             // Rewrite the base, otherwise assets like `/@vite/client` will
