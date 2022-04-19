@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/pengx17/vite-plugin-logseq/compare/v1.1.0...v1.1.1) (2022-03-24)
+
+
+### Bug Fixes
+
+* disable open by default ([e6ed70c](https://github.com/pengx17/vite-plugin-logseq/commit/e6ed70c7d135beb17840988215d87f71aa3479b3))
+
 # [1.1.0](https://github.com/pengx17/vite-plugin-logseq/compare/v1.0.1...v1.1.0) (2022-03-24)
 
 
