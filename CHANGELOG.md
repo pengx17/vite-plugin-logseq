@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/pengx17/vite-plugin-logseq/compare/v1.1.1...v1.1.2) (2022-04-19)
+
+
+### Bug Fixes
+
+* remove unused console log ([2d3319b](https://github.com/pengx17/vite-plugin-logseq/commit/2d3319b94bd3355231ff0ea1e072f2972f5c12d9))
+
 ## [1.1.1](https://github.com/pengx17/vite-plugin-logseq/compare/v1.1.0...v1.1.1) (2022-03-24)
 
 
