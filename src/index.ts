@@ -20,18 +20,6 @@ function getLogseqPluginId() {
   }
 }
 
-const reloadScript = `
-(() => {
-  try {
-    let name = logseq.api.get_current_page().originalName;
-    console.log(name)
-    logseq.api.replace_state("home");
-    logseq.api.replace_state("page", { name });
-  } catch (err) {
-    console.warn('failed to re-render current page', err);
-  }
-})();`;
-
 // TODO: support https?
 const request = async (url: string, options: RequestOptions) => {
   let resolve: (body: any) => void;
@@ -51,7 +39,7 @@ const request = async (url: string, options: RequestOptions) => {
   return promise;
 };
 
-const logseqDevPlugin: () => Plugin = () => {
+const logseqDevPlugin: (options: {entry: string}) => Plugin = ({entry: entryFile}) => {
   let config: ResolvedConfig;
   let configEnv: ConfigEnv;
   let server: ViteDevServer;
@@ -106,30 +94,40 @@ const logseqDevPlugin: () => Plugin = () => {
     },
 
     transform(code, id) {
+      // console.debug(id,'entry?', entryFile, id.endsWith(entryFile))
       if (
-        server?.moduleGraph.getModuleById(id)?.importers.size === 0 &&
+        // server?.moduleGraph.getModuleById(id)?.importers.size === 0 &&
         !/node_modules/.test(id) &&
-        id.startsWith(process.cwd())
+        id.startsWith(process.cwd()) &&
+        id.endsWith(entryFile)
       ) {
         const s = new MagicString(code);
-        s.prepend(
-          `
+        s.append(`\n\n
+var top_ref = top;
 if (import.meta.hot) {
-  import.meta.hot.accept(() => {});
-  import.meta.hot.dispose(() => {
-    top?.LSPluginCore.reload("${pluginId}");
-    console.log("✨Plugin ${pluginId} reloaded ✨");
-    // TODO: trigger re-render globally
-  });
-}\n\n`
-        );
+  import.meta.hot.accept(() => {
+    void (async () => {
+      console.log('%c✨ [${pluginId}] update ready - reloading ✨', 'font-weight: bold; font-size: 15px; color: purple;')
+      if (!top_ref) return WARN('HMR fail - no top')
+      try {
+        await top_ref.LSPluginCore.reload('${pluginId}')
+      } catch (err) { DEBUG('HMR error (probably double HMR race):', err); return }
 
-        s.append(`
-if (import.meta.hot) {
-  setTimeout(() => {
-    top.eval(\`${reloadScript}\`);
+      // Reload page
+      // TODO: is there a way to trigger re-render globally ?
+      top_ref.eval(\`(() => {
+        let name = logseq.api.get_current_page().originalName;
+        //console.debug("✨ Post-HMR -> RELOADING PAGE ✨", name);
+        logseq.api.replace_state("home");
+        setTimeout(() => logseq.api.replace_state("page", { name })); // sometimes it works without defer, but sometimes it doesn't
+      })();\`)
+    })()
+
+    // don't actually hot reload, do a cold reload - we just wanted to trigger a plugin reload when the new module is ready
+    import.meta.hot.invalidate()
   });
-}\n`);
+}`
+        );
 
         // amend entries
         return {
@@ -153,7 +151,7 @@ if (import.meta.hot) {
           if (typeof address === "object" && address) {
             address = "http://localhost" + ":" + address.port;
           }
-          tapHtml(address).then(async (html) => {
+          tapHtml(address as string).then(async (html) => {
             // Rewrite the base, otherwise assets like `/@vite/client` will
             // subject to default `file://` path
             const baseHref = address;
