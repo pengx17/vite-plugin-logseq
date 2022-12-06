@@ -102,13 +102,23 @@ const logseqDevPlugin: (options: {entry: string}) => Plugin = ({entry: entryFile
         id.endsWith(entryFile)
       ) {
         const s = new MagicString(code);
+
         s.append(`\n\n
 var top_ref = top;
 if (import.meta.hot) {
   import.meta.hot.accept(() => {
+    // don't actually hot reload, do a cold reload - we just wanted to trigger a plugin reload when the new module is ready
+    import.meta.hot.invalidate()
+
     void (async () => {
-      console.log('%c✨ [${pluginId}] update ready - reloading ✨', 'font-weight: bold; font-size: 15px; color: purple;')
       if (!top_ref) return WARN('HMR fail - no top')
+      if (top_ref.hmrCheck && (top_ref.hmrCheck - new Date()) > -2000) {
+        console.log("Skipping reload bc. debounce", top_ref.hmrCheck)
+        return
+      }
+      console.log('%c✨ [${pluginId}] update ready - reloading ✨', 'font-weight: bold; font-size: 15px; color: purple;')
+      top_ref.hmrCheck = new Date()
+      await (new Promise(resolve => setTimeout(resolve, 2000)))
       try {
         await top_ref.LSPluginCore.reload('${pluginId}')
       } catch (err) { DEBUG('HMR error (probably double HMR race):', err); return }
@@ -122,12 +132,35 @@ if (import.meta.hot) {
         setTimeout(() => logseq.api.replace_state("page", { name })); // sometimes it works without defer, but sometimes it doesn't
       })();\`)
     })()
-
-    // don't actually hot reload, do a cold reload - we just wanted to trigger a plugin reload when the new module is ready
-    import.meta.hot.invalidate()
   });
+  import.meta.hot.dispose(() => {
+    console.log("HMR Dispose")
+  })
 }`
         );
+
+// ANOTHER ATTEMPT:
+//         s.prepend(`
+// top.eval(\`(async () => {
+//   console.log("✨ [${pluginId}] startup done. already loaded?", (LSPluginCore.registeredPlugins.has('${pluginId}')));
+//   if (LSPluginCore.registeredPlugins.has('${pluginId}')) {
+//     await (new Promise(resolve => setTimeout(resolve, 1000)))
+//     console.log('%c✨ [${pluginId}] loaded, but already registered - reloading ✨', 'font-weight: bold; font-size: 15px; color: purple;')
+//     try {
+//       await LSPluginCore.reload('${pluginId}')
+//     } catch (err) { DEBUG('HMR error (probably double HMR race):', err); return }
+
+//     // Reload page
+//     // TODO: is there a way to trigger re-render globally ?
+//     let name = logseq.api.get_current_page().originalName;
+//     await (new Promise(resolve => setTimeout(resolve, 1000)))
+//     console.debug("✨ [${pluginId}] Post-HMR -> RELOADING PAGE ✨", name);
+//     logseq.api.replace_state("home");
+//     setTimeout(() => logseq.api.replace_state("page", { name })); // sometimes it works without defer, but sometimes it doesn't
+//   }
+// })();\`)
+// \n\n`
+//         );
 
         // amend entries
         return {
