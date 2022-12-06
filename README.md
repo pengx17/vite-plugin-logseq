@@ -4,7 +4,7 @@ A Vite plugin that is essential for developing Vite plugins locally.
 
 It should fix the follow HMR issues for you:
 - a valid index.html for local development
-- reload the plugin if update is outside of your UI framework's HMR boundary 
+- reload the plugin and Logseq page on HMR update
 
 ## Install
 
@@ -15,11 +15,13 @@ It should fix the follow HMR issues for you:
 ```ts
 import logseqPlugin from "vite-plugin-logseq";
 
-// in the plugins session
+// in the plugins session:
 
 plugins: [
   ...,
-  logseqPlugin()
+  logseqDevPlugin({
+    entry: 'src/main.ts' // the main entrypoint file which imports everything and loads the plugin
+  }),
 ]
 ```
 

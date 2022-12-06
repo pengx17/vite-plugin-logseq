@@ -1,15 +1,21 @@
 {
-  "include": ["src"],
+  "include": [
+    "./src"
+  ],
   "compilerOptions": {
     "declaration": true,
     "esModuleInterop": true,
-    "lib": ["es2018"],
+    "lib": [
+      "es2021",
+      "dom", // needed for latest esbuild & vite - https://github.com/evanw/esbuild/issues/2388
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "outDir": "dist",
-    "strict": true,
     "sourceMap": true,
-    "target": "es2018"
+    "target": "es2020",
+    "noImplicitAny": false,
+    //"skipLibCheck": true,
   }
 }
